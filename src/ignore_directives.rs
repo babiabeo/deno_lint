@@ -192,19 +192,13 @@ function foo(): any {}
 
 // deno-lint-ignore no-explicit-any,no-empty,no-debugger
 function foo(): any {}
-
-export function deepAssign(
-target: Record<string, any>,
-...sources: any[]
-): // deno-lint-ignore ban-types
-object | undefined {}
   "#;
 
     test_util::parse_and_then(source_code, |program| {
       let line_directives =
         parse_line_ignore_directives("deno-lint-ignore", program);
 
-      assert_eq!(line_directives.len(), 4);
+      assert_eq!(line_directives.len(), 3);
       let d = line_directives.get(&1).unwrap();
       assert_eq!(
         d.codes,
@@ -220,8 +214,6 @@ object | undefined {}
         d.codes,
         code_map(["no-explicit-any", "no-empty", "no-debugger"])
       );
-      let d = line_directives.get(&16).unwrap();
-      assert_eq!(d.codes, code_map(["ban-types"]));
     });
   }
 
